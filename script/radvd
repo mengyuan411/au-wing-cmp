@@ -1,0 +1,29 @@
+config interface
+	option interface 'lan'
+	option AdvSendAdvert '1'
+	list client ''
+	option ignore '0'
+	option IgnoreIfMissing '1'
+	option AdvSourceLLAddress '1'
+	option AdvDefaultPreference 'high'
+	option MinRtrAdvInterval '5'
+	option MaxRtrAdvInterval '10'
+config prefix
+	option interface 'lan'
+	option AdvOnLink '1'
+	option AdvAutonomous '1'
+	option ignore '0'
+	list prefix 'fc00:0101:0101::/64'
+	option AdvRouterAddr '1'
+config route
+	option interface 'lan'
+	list prefix ''
+	option ignore '1'
+config rdnss
+	option interface 'lan'
+	list addr ''
+	option ignore '1'
+config dnssl
+	option interface 'lan'
+	list suffix ''
+	option ignore '1'

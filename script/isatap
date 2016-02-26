@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+START=95
+IP=$(/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1 | grep -v 192.168.1.1 |grep -v inet6|awk '{print $2}'|tr -d "addr:")
+V4_REMOTE="166.111.21.1"
+V6_REMOTE="2402:f000:1:1501:0:5efe"
+V6_LOCAL="fe80::200:5efe"
+start() {
+    ip tunnel add sit1 mode sit remote ${V4_REMOTE} local ${IP}
+    ifconfig sit1 up
+    ifconfig sit1 add ${V6_LOCAL}:${IP}/64
+    ifconfig sit1 add ${V6_REMOTE}:${IP}/64
+    ip route add ::/0 via ${V6_REMOTE}:${V4_REMOTE} metric 1
+}
+stop() {
+    ip tunnel del sit1
+}
