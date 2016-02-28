@@ -414,6 +414,7 @@ static void print_inf(int t) {
         }
 
         printk(KERN_DEBUG "\nHT:%ld second(s) + %ld nanoseconds\n",ht[t].tv_sec,ht[t].tv_nsec);
+	printk(KERN_DEBUG "Station:%d\n",summary[t].inf_num);
 	int inf = timespec_div(timespec_add(summary[t].overall_busywait,ht[t]),summary[t].overall_extra_time);
 	printk(KERN_DEBUG "Wing-summary:%d\n",inf);
 	int wing_cs_avg = summary[t].wing/summary[t].mine_packets;
@@ -421,6 +422,8 @@ static void print_inf(int t) {
 	printk(KERN_DEBUG "Wing-average:%d\n",(wing_cs_avg+wing_ht)/2);
 	int delay = (summary[t].overall_extra_time.tv_sec*1000+summary[t].overall_extra_time.tv_nsec/1000000)*1000/summary[t].mine_bytes;
 	printk(KERN_DEBUG "Delay-summary:%d ms/KB\n",delay);
+	int dmac_avg = (summary[t].overall_extra_time.tv_sec*1000+summary[t].overall_extra_time.tv_nsec/1000000)/summary[t].mine_packets;
+	printk(KERN_DEBUG "dmac-average-packet:%d \n",dmac_avg);
 	if(t == W5G){
 		printk(KERN_DEBUG "-------WING_ENDS-------\n");
 	}
@@ -615,14 +618,14 @@ int cal_inf(struct packet_info * p){
                 	if (ampdu[t].retry > 0){ // all packets are retried packets
 				update_summary_ht(dmaci,ampdu[t].len*ampdu[t].num,ampdu[t].num,t);
 			}else{
-				//divide_inf(backup_store[t],ampdu[t].th,ampdu[t].te,dmaci,0,1,t);
+				divide_inf(backup_store[t],ampdu[t].th,ampdu[t].te,dmaci,0,1,t);
 				update_summary_cs(dmaci,ampdu[t].len*ampdu[t].num,1,t);//overall busywait, ampdu regards as one
 			}
 			clear_timespec(&tmp1);
 			tmp1 = timespec_sub(ampdu[t].te,ampdu[t].th);
 			summary[t].overall_extra_time = timespec_add(summary[t].overall_extra_time,tmp1);//overall transmit
 			summary[t].wing = summary[t].wing + timespec_div(dmaci,tmp1);
-		//	printk(KERN_DEBUG "[ampdu,%ld.%ld]%ld.%ld,%d,%ld.%ld,%ld.%ld,ifindex=%d,%s,num=%d,size=%d,retry=%d\n",ampdu[t].tw.tv_sec,ampdu[t].tw.tv_nsec,ampdu[t].te.tv_sec,ampdu[t].te.tv_nsec,ampdu[t].rate,dmaci.tv_sec,dmaci.tv_nsec,tmp1.tv_sec,tmp1.tv_nsec,ampdu[t].ifindex,ampdu[t].dev_name,ampdu[t].num,ampdu[t].len,ampdu[t].retry);
+			printk(KERN_DEBUG "[ampdu,%ld.%ld]%ld.%ld,%d,%ld.%ld,%ld.%ld,ifindex=%d,%s,num=%d,size=%d,retry=%d\n",ampdu[t].tw.tv_sec,ampdu[t].tw.tv_nsec,ampdu[t].te.tv_sec,ampdu[t].te.tv_nsec,ampdu[t].rate,dmaci.tv_sec,dmaci.tv_nsec,tmp1.tv_sec,tmp1.tv_nsec,ampdu[t].ifindex,ampdu[t].dev_name,ampdu[t].num,ampdu[t].len,ampdu[t].retry);
 			//clear the ampdu structure
 			memset(&ampdu[t],0,sizeof(ampdu[t]));
 		}
@@ -675,18 +678,17 @@ int cal_inf(struct packet_info * p){
 		}
 		if(p->wlan_retry == 0){
 			update_summary_cs(dmaci,p->len,1,t);
-			//divide_inf(store[t],th,p->te,dmaci,p->wlan_retry,0,t);
+			divide_inf(store[t],th,p->te,dmaci,p->wlan_retry,0,t);
 		}else{
 			update_summary_ht(dmaci,p->len,1,t);
 		}
 		summary[t].overall_extra_time = timespec_add(summary[t].overall_extra_time,tmp1);
 		summary[t].wing = summary[t].wing + timespec_div(dmaci,tmp1);
-	//	printk(KERN_DEBUG "[unampdu,%ld.%ld]%ld.%ld,%d,%ld.%ld,%ld.%ld,ifindex=%d,%s,num=%d,size=%d,retry=%d\n",p->tw.tv_sec,p->tw.tv_nsec,p->te.tv_sec,p->te.tv_nsec,p->phy_rate,dmaci.tv_sec,dmaci.tv_nsec,tmp1.tv_sec,tmp1.tv_nsec,p->ifindex,p->dev_name,1,p->len,p->wlan_retry);
+		printk(KERN_DEBUG "[unampdu,%ld.%ld]%ld.%ld,%d,%ld.%ld,%ld.%ld,ifindex=%d,%s,num=%d,size=%d,retry=%d\n",p->tw.tv_sec,p->tw.tv_nsec,p->te.tv_sec,p->te.tv_nsec,p->phy_rate,dmaci.tv_sec,dmaci.tv_nsec,tmp1.tv_sec,tmp1.tv_nsec,p->ifindex,p->dev_name,1,p->len,p->wlan_retry);
 		
 		check_print(p,t);
 		previous_is_ampdu[t] = p->ampdu; 
 	}
 
 }
-
 
