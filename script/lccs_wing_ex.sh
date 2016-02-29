@@ -1,7 +1,9 @@
-if [ $# -lt 4 ]
+if [ $# -lt 5 ]
 then 
-	echo "Usage: lccs_wing.sh <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold>"
+	echo "Usage: lccs_wing.sh <continue_flag> <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold>"
 	echo " "
+	echo "       continue_flag : 1|0 if execute the algorithm continuely or 
+just one round"
 	#echo "       algorithm     : ap | client | au | wing"
 	echo "       wlan_type     : wlan0 | wlan1"
 	echo "       T_run_time    : T_run=60 means changing channel every 60s"
@@ -22,6 +24,6 @@ echo $Ts
 #	echo "lccs already running ...."
 #else
 	
-/lib/pch/lccs_wing_daemon.sh au $1 $2 $3 $4 > /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
+/lib/pch/lccs_wing_daemon.sh au $1 $2 $3 $4 $5 > /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
 #/lib/pch/lccs_wing_daemon.sh wing $1 $2 $3 $4 >> /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
-fi
+

@@ -1,7 +1,8 @@
-if [ $# -lt 4 ]
+if [ $# -lt 6 ]
 then 
-	echo "Usage: lccs_daemon.sh <algorithm> <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold>"
+	echo "Usage: lccs_daemon.sh <algorithm> <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold> <continue_flag>"
 	echo " "
+	echo "	     continue_flag : 1|0 if execute the algorithm continuely or just one round"
 	echo "       algorithm     : ap | client | au | wing"
 	echo "       wlan_type     : wlan0 | wlan1"
 	echo "       T_run_time    : T_run=60 means changing channel every 60s"
@@ -151,7 +152,10 @@ do
 				exec_time=`date '+%s'`
 				echo "[$exec_time]  Excuting wing algorithm"
 				/lib/pch/lccs_wing.sh -1 $2
-				flag_choose=1
+				if [ $6 == 0 ]
+				then
+					flag_choose=1
+				fi
 				;;	
 			
 			esac	
