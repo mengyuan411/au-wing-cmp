@@ -1,4 +1,4 @@
-if [ $# -lt 5 ]
+if [ $# -lt 4 ]
 then 
 	echo "Usage: lccs_wing.sh <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold>"
 	echo " "
@@ -22,6 +22,6 @@ echo $Ts
 #	echo "lccs already running ...."
 #else
 	
-/root/pch/lccs_wing_daemon.sh au wlan0 $1 $2 $3 > /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
-/root/pch/lccs_wing_daemon.sh wing wlan0 $1 $2 $3 >> /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
+/lib/pch/lccs_wing_daemon.sh au $1 $2 $3 $4 > /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
+#/lib/pch/lccs_wing_daemon.sh wing $1 $2 $3 $4 >> /tmp/wifiunion-uploads/$mac/lccs_$Ts.log
 fi

@@ -1,4 +1,4 @@
-if [ $# -lt 5 ]
+if [ $# -lt 4 ]
 then 
 	echo "Usage: lccs_daemon.sh <algorithm> <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold>"
 	echo " "
@@ -24,7 +24,7 @@ pre_bytes=0
 prob_interval=10
 run_time=`expr 0 - $prob_interval`
 silent_time=`expr 0 - $prob_interval`
-flag_sent_data=0
+flag_sent_data=1
 flag_time_to_change=0
 flag_choose=0
 
@@ -99,96 +99,63 @@ do
 			else
 				state=`expr $state + 1`
 			fi
-			if [ $state_large -eq 15 ]
+			if [ $state_large -eq 8 ]
 			then
 				state_large=0
 			else
 				state_large=`expr $state_large + 1`
 			fi
 
-			if [ $flag_choose == 1]
+			if [ $flag_choose == 1 ]
 			then
 				break
 			fi
 			case $state_large in
 			1)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting ap algorithm"
-				/root/pch/lccs_ap.sh 1 $2
-				;;	
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh 0 $2
+				;;
 			2)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting ap algorithm"
-				/root/pch/lccs_ap.sh 2 $2
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh 1 $2
 				;;	
 			3)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting ap algorithm"
-				/root/pch/lccs_ap.sh -1 $2
-				;;	
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh 2 $2
+				;;		
 			4)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting client algorithm"
-				/root/pch/lccs_client.sh 0 $2
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh -1 $2
+			#	flag_choose=1
 				;;	
 			5)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting client algorithm"
-				/root/pch/lccs_client.sh 1 $2
+				echo "[$exec_time]  Excuting wing algorithm"
+				/lib/pch/lccs_wing.sh 0 $2
 				;;	
 			6)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting client algorithm"
-				/root/pch/lccs_client.sh 2 $2
+				echo "[$exec_time]  Excuting wing algorithm"
+				/lib/pch/lccs_wing.sh 1 $2
 				;;	
 			7)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting client algorithm"
-				/root/pch/lccs_client.sh -1 $2
+				echo "[$exec_time]  Excuting wing algorithm"
+				/lib/pch/lccs_wing.sh 2 $2
 				;;	
 			8)
 				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting au algorithm"
-				/root/pch/lccs_au.sh 0 $2
-				;;	
-			9)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting au algorithm"
-				/root/pch/lccs_au.sh 1 $2
-				;;	
-			10)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting au algorithm"
-				/root/pch/lccs_au.sh 2 $2
-				;;	
-			11)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting au algorithm"
-				/root/pch/lccs_au.sh -1 $2
+				echo "[$exec_time]  Excuting wing algorithm"
+				/lib/pch/lccs_wing.sh -1 $2
 				flag_choose=1
 				;;	
-			12)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/root/pch/lccs_wing.sh 0 $2
-				;;	
-			13)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/root/pch/lccs_wing.sh 1 $2
-				;;	
-			14)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/root/pch/lccs_wing.sh 2 $2
-				;;	
-			15)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/root/pch/lccs_wing.sh -1 $2
-				;;
+			
 			esac	
-			flag_sent_data=0
+			flag_sent_data=1
 			flag_time_to_change=0
 			silent_time=0
 		fi
