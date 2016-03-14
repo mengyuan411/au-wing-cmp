@@ -28,14 +28,31 @@ cat /sys/kernel/debug/ieee80211/phy0/ath9k/queues > /tmp/wifiunion-uploads/$mac/
 cat /sys/kernel/debug/ieee80211/phy1/ath9k/xmit > /tmp/wifiunion-uploads/$mac/wifi_data/wlan1_tx_$Ts
 cat /sys/kernel/debug/ieee80211/phy1/ath9k/recv > /tmp/wifiunion-uploads/$mac/wifi_data/wlan1_rx_$Ts
 cat /sys/kernel/debug/ieee80211/phy1/ath9k/queues > /tmp/wifiunion-uploads/$mac/wifi_data/wlan1_q_$Ts
-dmesg -c > /tmp/wifiunion-uploads/$mac/dmesg_data/$Ts
+#dmesg -c > /tmp/wifiunion-uploads/$mac/dmesg_data/$Ts
 echo $Ts,$siq,$load,$mem > /tmp/wifiunion-uploads/$mac/load_data/heart-beat 
 
 
 #lccs-wing
-cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B4 | grep Wing-average | awk -F ':' '{print $2}' >> /tmp/wifiunion-uploads/$mac/wing_wlan0.txt
-cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B4 | grep Wing-average | awk -F ':' '{print $2}' >> /tmp/wifiunion-uploads/$mac/wing_wlan1.txt
-
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep Wing-average | awk -F ':' '{print $2}' >> /tmp/wifiunion-uploads/$mac/wing_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep Wing-average | awk -F ':' '{print $2}' >> /tmp/wifiunion-uploads/$mac/wing_wlan1.txt
+#lccs-dmac-avg
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep dmac-average-packet | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmac_avg_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep dmac-average-packet | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmac_avg_wlan1.txt
+#lccs-dmac-50th
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep dmac-50th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmac_50th_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep dmac-50th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmac_50th_wlan1.txt
+#lccs-dmac-90th
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep dmac-90th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmac_90th_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep dmac-90th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmac_90th_wlan1.txt
+#lccs-dmaci-avg
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep dmaci-average-packet | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmaci_avg_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep dmaci-average-packet | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmaci_avg_wlan1.txt
+#lccs-dmaci-50th
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep dmaci-50th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmaci_50th_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep dmaci-50th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmaci_50th_wlan1.txt
+#lccs-dmaci-90th
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep 5.0GHz -B10 | grep dmaci-90th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmaci_90th_wlan0.txt
+cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep WING_ENDS -B10 | grep dmaci-90th | awk -F ' ' '{print $4}' >> /tmp/wifiunion-uploads/$mac/dmaci_90th_wlan1.txt
 #lccs-au
 source /lib/pch/kaixin_au.sh wlan0
 source /lib/pch/kaixin_au.sh wlan1
