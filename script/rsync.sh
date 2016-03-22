@@ -4,4 +4,4 @@ rm /tmp/wifiunion-uploads/$mac/delay_data/*
 rm /tmp/wifiunion-uploads/$mac/inf_data/*
 rm /tmp/wifiunion-uploads/$mac/wire_data/*
 rm /tmp/wifiunion-uploads/$mac/wifi_data/*
-rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
+#rm /tmp/wifiunion-uploads/$mac/dmesg_data/*

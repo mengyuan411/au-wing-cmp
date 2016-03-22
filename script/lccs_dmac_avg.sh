@@ -1,9 +1,9 @@
 mac=`ifconfig wlan0 | grep HWaddr | awk '{print $5}'|sed 's/://g'`
 echo $mac
 type=''
-if [ $# -ne 2 ]
+if [ $# -lt 2 ]
 then
-	echo "Usage: lccs_dmac_avg.sh <state> <dev_name> "
+	echo "Usage: lccs_dmac_avg.sh <state> <dev_name> or <begintime>"
 	exit 1
 fi
 
@@ -14,10 +14,24 @@ else
 	type="radio1"
 fi
 
+exec_time=`date '+%s'`
+etime=$exec_time
+if [ $1 != 0 ]
+then
+	btime=$3
+	dmesg -c > /tmp/wifiunion-uploads/$mac/dmesg_data/$exec_time
+	cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep ampdu | awk -F ',' -v btime=$btime -v etime=$etime '{ if($2 >= btime && $2 <= etime) { print $0 }}' >> /tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt
+	#cat tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt | sort -t ',' -k 4
+	avg_dmac=`cat /tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt | awk -F ',' 'NR == 1 { sums=0; sumn=0; } { if($5 > 0 || $6 > 0) sums+=$5; sumn+=$6; } END {printf "%f,%d\n",(sums*1000000+sumn/1000)/NR,NR}'`
+fi
+#exec_time=`date '+%s'`
+#etime= $exec_time
+
+#cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep ampdu | awk -v 
 #median=`cat /tmp/wifiunion-uploads/wing.txt  | sort | awk '{arr[NR]=$1} END { if (NR%2==1) print arr[(NR+1)/2]; else print (arr
 #[NR/2]+arr[NR/2+1])/2}'`
 #avg_wing=`cat /tmp/wifiunion-uploads/$mac/wing_$2.txt | awk 'NR == 1 { sum=0 } { if($1 > 0) sum+=$1; } END {printf "%f\n",sum/NR}'`
-avg_dmac=`cat /tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt | awk 'NR == 1 { sum=0 } { if($1 > 0) sum+=$1; } END {printf "%f,%d\n",sum/NR,NR}'`
+#avg_dmac=`cat /tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt | awk 'NR == 1 { sum=0 } { if($1 > 0) sum+=$1; } END {printf "%f,%d\n",sum/NR,NR}'`
 case $1 in 
 1)
 	sed -i "1s/.*/chan1,$(echo $avg_dmac)/" /tmp/wifiunion-uploads/dmac_avg_decision_$2.txt
@@ -71,12 +85,26 @@ then
                 chan=11
         fi
 	exec_time=`date '+%s'`
+	PRO=`ps | grep 'rsync' | grep -v grep | wc -l`
+	if  [ $PRO -le 0 ]
+	then
+        	chmod 777 /lib/pch/rsync.sh
+		/lib/pch/rsync.sh
+        	rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
+	fi
 	echo "[$exec_time]: I will change $type to Channel:$chan"	
 	uci set wireless.$type.channel=$chan
 	uci commit
 	wifi
 else
 	exec_time=`date '+%s'`
+	PRO=`ps | grep 'rsync' | grep -v grep | wc -l`
+        if  [ $PRO -le 0 ]
+        then
+                chmod 777 /lib/pch/rsync.sh
+                /lib/pch/rsync.sh
+                rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
+        fi
 	chan=`expr $1 \\* 5 + 1`
 	echo "[$exec_time]: I will change $type to Channel:$chan"	
 	uci set wireless.$type.channel=$chan

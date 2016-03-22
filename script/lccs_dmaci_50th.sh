@@ -1,7 +1,7 @@
 mac=`ifconfig wlan0 | grep HWaddr | awk '{print $5}'|sed 's/://g'`
 echo $mac
 type=''
-if [ $# -ne 2 ]
+if [ $# -lt 2 ]
 then
 	echo "Usage: lccs_dmaci_50th.sh <state> <dev_name> "
 	exit 1
@@ -13,22 +13,34 @@ then
 else
 	type="radio1"
 fi
-
+exec_time=`date '+%s'`
+etime=$exec_time
 #median=`cat /tmp/wifiunion-uploads/wing.txt  | sort | awk '{arr[NR]=$1} END { if (NR%2==1) print arr[(NR+1)/2]; else print (arr
 #[NR/2]+arr[NR/2+1])/2}'`
 #50th_wing=`cat /tmp/wifiunion-uploads/$mac/wing_$2.txt | awk 'NR == 1 { sum=0 } { if($1 > 0) sum+=$1; } END {printf "%f\n",sum/NR}'`
-50th_dmaci=`cat /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt | awk 'NR == 1 { sum=0 } { if($1 > 0) sum+=$1; } END {printf "%f,%d\n",sum/NR,NR}'`
+#50th_dmaci=`cat /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt | awk 'NR == 1 { sum=0 } { if($1 > 0) sum+=$1; } END {printf "%f,%d\n",sum/NR,NR}'`
+if [ $1 != 0 ]
+then
+        btime=$3
+	dmesg -c > /tmp/wifiunion-uploads/$mac/dmesg_data/$exec_time
+        cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep ampdu | awk -F ',' -v btime=$btime -v etime=$etime '{ if($2 >= btime && $2 <= etime) { print $0 }}' >> /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt
+        #cat tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt | sort -t ',' -k 4
+        linenum=`wc -l /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt | awk '{print $1}'`
+        percent=2
+        pos=`expr $linenum / $percent`
+        dmaci_50th=`cat /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt | sort -t ',' -nk 3 -nk 4 | sed -n "$pos p" | awk -F ',' '{printf "%f\n",($3*1000000+$4/1000)}'`
+fi
 case $1 in
 1)
-	sed -i "1s/.*/chan1,$(echo $50th_dmaci)/" /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
+	sed -i "1s/.*/chan1,$(echo $dmaci_50th)/" /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
 	echo "" > /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt
 	;;
 2)
-	sed -i "2s/.*/chan6,$(echo $50th_dmaci)/" /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
+	sed -i "2s/.*/chan6,$(echo $dmaci_50th)/" /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
 	echo "" > /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt
 	;;
 -1)
-	sed -i "3s/.*/chan11,$(echo $50th_dmaci)/" /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
+	sed -i "3s/.*/chan11,$(echo $dmaci_50th)/" /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
 	echo "" > /tmp/wifiunion-uploads/$mac/dmaci_50th_$2.txt
 	;;
 0)
@@ -71,12 +83,26 @@ then
                 chan=11
         fi
 	exec_time=`date '+%s'`
+	PRO=`ps | grep 'rsync' | grep -v grep | wc -l`
+        if [ $PRO -le 0 ]
+        then
+                chmod 777 /lib/pch/rsync.sh
+                /lib/pch/rsync.sh
+                rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
+        fi
 	echo "[$exec_time]: I will change $type to Channel:$chan"
 	uci set wireless.$type.channel=$chan
 	uci commit
 	wifi
 else
 	exec_time=`date '+%s'`
+	PRO=`ps | grep 'rsync' | grep -v grep | wc -l`
+        if [ $PRO -le 0 ]
+        then
+                chmod 777 /lib/pch/rsync.sh
+                /lib/pch/rsync.sh
+                rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
+        fi
 	chan=`expr $1 \\* 5 + 1`
 	echo "[$exec_time]: I will change $type to Channel:$chan"
 	uci set wireless.$type.channel=$chan

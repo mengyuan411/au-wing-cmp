@@ -4,13 +4,13 @@ if [ $# -lt 6 ]
 then 
 	echo "Usage: lccs_daemon.sh <algorithm> <wlan_type> <T_run_time> <T_silent_time> <T_silent_thereshold> <continue_flag>"
 	echo " "
-	echo "	     continue_flag : 1|0 if execute the algorithm continuely or just one round"
-	echo "       algorithm     : ap | client | au | wing"
+	echo "       algorithm     : au | dmac90 | dmac50 | dmacavg | dmaci90 | dmaci50 | dmaciavg"
 	echo "       wlan_type     : wlan0 | wlan1"
 	echo "       T_run_time    : T_run=60 means changing channel every 60s"
 	echo "       T_silent_time : T_silent=30 means even after T_run_time, we have to find the "
 	echo "                                   relative silent time to adjuct the channel"
 	echo "       T_silent      : T_silent=0 means if wap sends less than 0 bytes "
+	echo "       continue_flag : 1|0 if execute the algorithm continuely or just one round"
 	echo "                                    in $prob_intervals interverl, then flag this $prob_interval seconds as siltent"
 	
 	exit 1
@@ -22,6 +22,22 @@ silent_threshold=$5
 
 mac=`ifconfig wlan0 | grep HWaddr | awk '{print $5}'|sed 's/://g'`
 state=0
+case $1 in
+'dmacavg') state_large=1
+;;
+'dmac50') state_large=5
+;;
+'dmac90') state_large=9
+;;
+'dmaciavg')state_large=13
+;;
+'dmaci50')state_large=17
+;;
+'dmaci90')state_large=21
+;;
+'au')state_large=25
+;;
+esac		
 state_large=0
 pre_bytes=0
 prob_interval=10
@@ -54,9 +70,9 @@ wifi
 #echo "chan6,0" >> /tmp/wifiunion-uploads/client_decision_$2.txt
 #echo "chan11,0" >> /tmp/wifiunion-uploads/client_decision_$2.txt
 
-#echo "chan1,0" > /tmp/wifiunion-uploads/au_decision_$2.txt
-#echo "chan6,0" >> /tmp/wifiunion-uploads/au_decision_$2.txt
-#echo "chan11,0" >> /tmp/wifiunion-uploads/au_decision_$2.txt
+echo "chan1,0" > /tmp/wifiunion-uploads/au_decision_$2.txt
+echo "chan6,0" >> /tmp/wifiunion-uploads/au_decision_$2.txt
+echo "chan11,0" >> /tmp/wifiunion-uploads/au_decision_$2.txt
 
 echo "chan1,0" > /tmp/wifiunion-uploads/wing_decision_$2.txt
 echo "chan6,0" >> /tmp/wifiunion-uploads/wing_decision_$2.txt
@@ -85,6 +101,8 @@ echo "chan11,0" >> /tmp/wifiunion-uploads/dmaci_50th_decision_$2.txt
 echo "chan1,0" > /tmp/wifiunion-uploads/dmaci_90th_decision_$2.txt
 echo "chan6,0" >> /tmp/wifiunion-uploads/dmaci_90th_decision_$2.txt
 echo "chan11,0" >> /tmp/wifiunion-uploads/dmaci_90th_decision_$2.txt
+
+before_exec_time=0
 
 while true
 do
@@ -126,7 +144,66 @@ do
 			else
 				state=`expr $state + 1`
 			fi
-			if [ $state_large -eq 8 ]
+			case $1 in
+			'dmacavg') 
+				if [ $state_large -eq 4 ]
+                        	then
+                                	state_large=1
+                        	else
+                                	state_large=`expr $state_large + 1`
+                       		fi
+			;;
+			'dmac50')
+				if [ $state_large -eq 8 ]
+                                then
+                                        state_large=5
+                                else
+                                        state_large=`expr $state_large + 1`
+				fi
+
+			;;
+			'dmac90') 
+				if [ $state_large -eq 12 ]
+                                then
+                                        state_large=9
+                                else
+                                        state_large=`expr $state_large + 1`
+                                fi
+			;;
+			'dmaciavg')
+				if [ $state_large -eq 16 ]
+                                then
+                                        state_large=13
+                                else
+                                        state_large=`expr $state_large + 1`
+                                fi
+			;;
+			'dmaci50')
+				if [ $state_large -eq 20 ]
+                                then
+                                        state_large=17
+                                else
+                                        state_large=`expr $state_large + 1`
+                                fi
+			;;
+			'dmaci90')
+				if [ $state_large -eq 24 ]
+                                then
+                                        state_large=21
+                                else
+                                        state_large=`expr $state_large + 1`
+                                fi
+			;;
+			'au')
+				if [ $state_large -eq 28 ]
+                                then
+                                        state_large=25
+                                else
+                                        state_large=`expr $state_large + 1`
+                                fi
+			;;
+			esac
+			if [ $state_large -eq 28 ]
 			then
 				state_large=0
 			else
@@ -140,161 +217,213 @@ do
 			case $state_large in
 			1)
 				exec_time=`date '+%s'`
+				before_exec_time=$exec_time
 				echo "[$exec_time]  Excuting dmac average algorithm"
 				/lib/pch/lccs_dmac_avg.sh 0 $2
 				;;
 			2)
 				exec_time=`date '+%s'`
 				echo "[$exec_time]  Excuting dmac average algorithm"
-				/lib/pch/lccs_dmac_avg.sh 1 $2
+				/lib/pch/lccs_dmac_avg.sh 1 $2 $before_exec_time
+				before_exec_time=$exec_time
 				;;	
 			3)
 				exec_time=`date '+%s'`
 				echo "[$exec_time]  Excuting dmac average algorithm"
-				/lib/pch/lccs_dmac_avg.sh 2 $2
+				/lib/pch/lccs_dmac_avg.sh 2 $2 $before_exec_time
+				before_exec_time=$exec_time
 				;;		
 			4)
 				exec_time=`date '+%s'`
 				echo "[$exec_time]  Excuting dmac average algorithm"
-				/lib/pch/lccs_dmac_avg.sh -1 $2
+				/lib/pch/lccs_dmac_avg.sh -1 $2 $before_exec_time
+				before_exec_time=$exec_time
 			#	flag_choose=1
 				;;	
-			5)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/lib/pch/lccs_wing.sh 0 $2
-				;;	
-			6)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/lib/pch/lccs_wing.sh 1 $2
-				;;	
-			7)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/lib/pch/lccs_wing.sh 2 $2
-				;;	
-			8)
-				exec_time=`date '+%s'`
-				echo "[$exec_time]  Excuting wing algorithm"
-				/lib/pch/lccs_wing.sh -1 $2
+		#	5)
+		#		exec_time=`date '+%s'`
+		#		echo "[$exec_time]  Excuting wing algorithm"
+		#		/lib/pch/lccs_wing.sh 0 $2
+		#		before_exec_time=$exec_time
+		#		;;	
+		#	6)
+		#		exec_time=`date '+%s'`
+		#		echo "[$exec_time]  Excuting wing algorithm"
+		#		/lib/pch/lccs_wing.sh 1 $2 $before_exec_time
+		##		before_exec_time=$exec_time
+		#		;;	
+		#	7)
+		#		exec_time=`date '+%s'`
+		#		echo "[$exec_time]  Excuting wing algorithm"
+		#		/lib/pch/lccs_wing.sh 2 $2 $before_exec_time
+		#		before_exec_time=$exec_time
+		#		;;	
+		#	8)
+		#		exec_time=`date '+%s'`
+	#			echo "[$exec_time]  Excuting wing algorithm"
+	#			/lib/pch/lccs_wing.sh -1 $2 $before_exec_time
+	#			before_exec_time=$exec_time
 			#	if [ $6 == 0 ]
 			#	then
 			#		flag_choose=1
 			#	fi
-				;;	
-			9)
+			#	;;	
+			5)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 50th algorithm"
                                 /lib/pch/lccs_dmac_50th.sh 0 $2
-                                ;;
-                        10)
+                                before_exec_time=$exec_time
+				;;
+                        6)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 50th algorithm"
-                                /lib/pch/lccs_dmac_50th.sh 1 $2
+                                /lib/pch/lccs_dmac_50th.sh 1 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
-                        11)
+                        7)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 50th algorithm"
-                                /lib/pch/lccs_dmac_50th.sh 2 $2
+                                /lib/pch/lccs_dmac_50th.sh 2 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
-                        12)
+                        8)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 50th algorithm"
-                                /lib/pch/lccs_dmac_50th.sh -1 $2
+                                /lib/pch/lccs_dmac_50th.sh -1 $2 $before_exec_time
+				before_exec_time=$exec_time
                         #       flag_choose=1
                                 ;;
 			
-			13)
+			9)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 90th algorithm"
                                 /lib/pch/lccs_dmac_90th.sh 0 $2
-                                ;;
-                        14)
+                                before_exec_time=$exec_time
+				;;
+                        10)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 90th algorithm"
-                                /lib/pch/lccs_dmac_90th.sh 1 $2
+                                /lib/pch/lccs_dmac_90th.sh 1 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
-                        15)
+                        11)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 90th algorithm"
-                                /lib/pch/lccs_dmac_90th.sh 2 $2
+                                /lib/pch/lccs_dmac_90th.sh 2 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
-                        16)
+                        12)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmac 90th algorithm"
-                                /lib/pch/lccs_dmac_90th.sh -1 $2
+                                /lib/pch/lccs_dmac_90th.sh -1 $2 $before_exec_time
+				before_exec_time=$exec_time
                         #       flag_choose=1
                                 ;;
-			17)
+			13)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmaci average algorithm"
                                 /lib/pch/lccs_dmaci_avg.sh 0 $2
                                 ;;
-                        18)
+                        14)
                                 exec_time=`date '+%s'`
                                 echo "[$exec_time]  Excuting dmaci average algorithm"
-                                /lib/pch/lccs_dmaci_avg.sh 1 $2
+                                /lib/pch/lccs_dmaci_avg.sh 1 $2 $before_exec_time
+				before_exec_time=$exec_time
+                                ;;
+                        15)
+                                exec_time=`date '+%s'`
+                                echo "[$exec_time]  Excuting dmaci average algorithm"
+                                /lib/pch/lccs_dmaci_avg.sh 2 $2 $before_exec_time
+				before_exec_time=$exec_time
+                                ;;
+                        16)
+                                exec_time=`date '+%s'`
+                                echo "[$exec_time]  Excuting dmaci average algorithm"
+                                /lib/pch/lccs_dmaci_avg.sh -1 $2 $before_exec_time
+				before_exec_time=$exec_time
+                        #       flag_choose=1
+                                ;;
+			17)
+                                exec_time=`date '+%s'`
+                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
+                                /lib/pch/lccs_dmaci_50th.sh 0 $2
+                                before_exec_time=$exec_time
+				;;
+                        18)
+                                exec_time=`date '+%s'`
+                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
+                                /lib/pch/lccs_dmaci_50th.sh 1 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
                         19)
                                 exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci average algorithm"
-                                /lib/pch/lccs_dmaci_avg.sh 2 $2
+                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
+                                /lib/pch/lccs_dmaci_50th.sh 2 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
                         20)
                                 exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci average algorithm"
-                                /lib/pch/lccs_dmaci_avg.sh -1 $2
+                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
+                                /lib/pch/lccs_dmaci_50th.sh -1 $2 $before_exec_time
+				before_exec_time=$exec_time
                         #       flag_choose=1
                                 ;;
 			21)
                                 exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
-                                /lib/pch/lccs_dmaci_50th.sh 0 $2
-                                ;;
+                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
+                                /lib/pch/lccs_dmaci_90th.sh 0 $2
+                                before_exec_time=$exec_time
+				;;
                         22)
                                 exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
-                                /lib/pch/lccs_dmaci_50th.sh 1 $2
+                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
+                                /lib/pch/lccs_dmaci_90th.sh 1 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
                         23)
                                 exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
-                                /lib/pch/lccs_dmaci_50th.sh 2 $2
+                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
+                                /lib/pch/lccs_dmaci_90th.sh 2 $2 $before_exec_time
+				before_exec_time=$exec_time
                                 ;;
                         24)
                                 exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 50th algorithm"
-                                /lib/pch/lccs_dmaci_50th.sh -1 $2
+                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
+                                /lib/pch/lccs_dmaci_90th.sh -1 $2 $before_exec_time
+				before_exec_time=$exec_time
                         #       flag_choose=1
+			#	if [ $6 == 0 ]
+                         #       then
+                          #              flag_choose=1
+                           #     fi
                                 ;;
+
 			25)
-                                exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
-                                /lib/pch/lccs_dmaci_90th.sh 0 $2
-                                ;;
-                        26)
-                                exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
-                                /lib/pch/lccs_dmaci_90th.sh 1 $2
-                                ;;
-                        27)
-                                exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
-                                /lib/pch/lccs_dmaci_90th.sh 2 $2
-                                ;;
-                        28)
-                                exec_time=`date '+%s'`
-                                echo "[$exec_time]  Excuting dmaci 90th algorithm"
-                                /lib/pch/lccs_dmaci_90th.sh -1 $2
-                        #       flag_choose=1
-				if [ $6 == 0 ]
+				exec_time=`date '+%s'`
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh 0 $2
+				;;
+			26)
+				exec_time=`date '+%s'`
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh 1 $2
+				;;	
+			27)
+				exec_time=`date '+%s'`
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh 2 $2
+				;;		
+			28)
+				exec_time=`date '+%s'`
+				echo "[$exec_time]  Excuting au algorithm"
+				/lib/pch/lccs_au.sh -1 $2
+			#	flag_choose=1
+				 if [ $6 == 0 ]
                                 then
                                         flag_choose=1
                                 fi
                                 ;;
-
-
+				
 
 			esac	
 			flag_sent_data=1
