@@ -23,22 +23,22 @@ silent_threshold=$5
 mac=`ifconfig wlan0 | grep HWaddr | awk '{print $5}'|sed 's/://g'`
 state=0
 case $1 in
-'dmacavg') state_large=1
+'dmacavg') state_large=0
 ;;
-'dmac50') state_large=5
+'dmac50') state_large=4
 ;;
-'dmac90') state_large=9
+'dmac90') state_large=8
 ;;
-'dmaciavg')state_large=13
+'dmaciavg')state_large=12
 ;;
-'dmaci50')state_large=17
+'dmaci50')state_large=16
 ;;
-'dmaci90')state_large=21
+'dmaci90')state_large=20
 ;;
-'au')state_large=25
+'au')state_large=24
 ;;
 esac		
-state_large=0
+#state_large=0
 pre_bytes=0
 prob_interval=10
 run_time=`expr 0 - $prob_interval`
@@ -203,12 +203,12 @@ do
                                 fi
 			;;
 			esac
-			if [ $state_large -eq 28 ]
-			then
-				state_large=0
-			else
-				state_large=`expr $state_large + 1`
-			fi
+			#if [ $state_large -eq 28 ]
+			#then
+			#	state_large=0
+			#else
+			#	state_large=`expr $state_large + 1`
+			#fi
 
 			if [ $flag_choose == 1 ]
 			then
