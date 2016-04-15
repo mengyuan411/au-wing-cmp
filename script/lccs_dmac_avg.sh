@@ -95,10 +95,10 @@ then
 	echo "[$exec_time]: I will change $type to Channel:$chan"	
 	uci set wireless.$type.channel=$chan
 	uci commit
-	if [ $chan -eq 1]
+	if [ $chan -eq 1 ]
 		then
 			hostapd_cli chan_switch 10 2412
-	elif [ $chan -eq 6]
+	elif [ $chan -eq 6 ]
 		then 
 			hostapd_cli chan_switch 10 2437
 	else
@@ -121,10 +121,10 @@ else
 	echo "[$exec_time]: I will change $type to Channel:$chan"	
 	uci set wireless.$type.channel=$chan
 	uci commit
-	if [ $chan -eq 1]
+	if [ $chan -eq 1 ]
 		then
 			hostapd_cli chan_switch 10 2412
-	elif [ $chan -eq 6]
+	elif [ $chan -eq 6 ] 
 		then 
 			hostapd_cli chan_switch 10 2437
 	else
