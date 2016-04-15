@@ -131,7 +131,7 @@ else
 		hostapd_cli chan_switch 10 2462
 	fi
 	
-	dmesg -c
+	dmesg -c > /tmp/wifiunion-uploads/$mac/nousedmesg.txt
 	echo "0,0,0" > /tmp/wifiunion-uploads/$mac/numcount.txt
 	/lib/pch/dmesg_dum.sh 5 1
 
