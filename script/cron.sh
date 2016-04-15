@@ -1,5 +1,5 @@
 MAILTO=""
-*/1 * * * * /lib/pch/dmesg_tmp.sh
+#*/1 * * * * /lib/pch/dmesg_tmp.sh
 */1 * * * * source /lib/pch/checkfile.sh
 */1 * * * * source /lib/pch/rsync.sh
 */1 * * * * source /lib/pch/check_dns_monitor.sh
