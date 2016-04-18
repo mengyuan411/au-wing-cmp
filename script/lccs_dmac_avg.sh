@@ -18,8 +18,9 @@ exec_time=`date '+%s'`
 etime=$exec_time
 if [ $1 != 0 ]
 then
-	PID=`ps | grep 'dmesg_dum' | awk '{print $1}'`
-	kill $PID
+#	ps
+#	PID=`ps | grep 'dmesg_dum' | awk '{print $1}'`
+#	kill $PID
 
 	#sums=`cat /tmp/wifiunion-uploads/$mac/numcount.txt | awk -F ',' '{print $1}'`
 	#sumn=`cat /tmp/wifiunion-uploads/$mac/numcount.txt | awk -F ',' '{print $2}'`
@@ -105,7 +106,7 @@ then
 		hostapd_cli chan_switch 10 2462
 	fi
 	echo "0,0,0" > /tmp/wifiunion-uploads/$mac/numcount.txt
-	/lib/pch/dmesg_dum.sh 5 0
+#	/lib/pch/dmesg_dum.sh 5 0
 
 else
 	exec_time=`date '+%s'`
@@ -124,7 +125,7 @@ else
 	if [ $chan -eq 1 ]
 		then
 			hostapd_cli chan_switch 10 2412
-	elif [ $chan -eq 6 ] 
+	elif [ $chan -eq 6 ]
 		then 
 			hostapd_cli chan_switch 10 2437
 	else
@@ -133,6 +134,8 @@ else
 	
 	dmesg -c > /tmp/wifiunion-uploads/$mac/nousedmesg.txt
 	echo "0,0,0" > /tmp/wifiunion-uploads/$mac/numcount.txt
-	/lib/pch/dmesg_dum.sh 5 1
+	#echo "before"
+	#/lib/pch/dmesg_dum.sh 5 1 &
+	#echo "exit lccs_dmac_avg.sh"
 
 fi

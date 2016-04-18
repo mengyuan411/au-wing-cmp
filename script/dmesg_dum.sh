@@ -20,7 +20,7 @@ do
 	fi
 
 	/lib/pch/dmesg_rsyn.sh
-	rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
+	#rm /tmp/wifiunion-uploads/$mac/dmesg_data/*
 
 	sleep $sleeptime
 done
