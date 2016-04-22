@@ -1,0 +1,142 @@
+[1461144826]: I will change radio0 to Channel:1
+silent for 0 seconds
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461145135]  Start counting down....
+silent for 10 seconds
+[1461145135]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461145135]: I will change radio0 to Channel:1
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461145444]  Start counting down....
+silent for 10 seconds
+[1461145444]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461145445]: I will change radio0 to Channel:6
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461145757]  Start counting down....
+silent for 10 seconds
+[1461145757]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461145758]: I will change radio0 to Channel:11
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461146068]  Start counting down....
+silent for 10 seconds
+[1461146068]  Excuting dmac average algorithm
+E4F4C6FF8B25
+channel 1 dmac_avg: 1902
+channel 6 dmac_avg: 1865
+channel 11 dmac_avg: 1852
+[1461146069]: I will change radio0 to Channel:11
+Selected interface 'wlan0'
+FAIL
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461146377]  Start counting down....
+silent for 10 seconds
+[1461146377]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461146377]: I will change radio0 to Channel:1
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461146686]  Start counting down....
+silent for 10 seconds
+[1461146687]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461146687]: I will change radio0 to Channel:6
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461146996]  Start counting down....
+silent for 10 seconds
+[1461146996]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461146996]: I will change radio0 to Channel:11
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461147307]  Start counting down....
+silent for 10 seconds
+[1461147307]  Excuting dmac average algorithm
+E4F4C6FF8B25
+channel 1 dmac_avg: 1602
+channel 6 dmac_avg: 1597
+channel 11 dmac_avg: 1613
+[1461147307]: I will change radio0 to Channel:6
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461147617]  Start counting down....
+silent for 10 seconds
+[1461147618]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461147618]: I will change radio0 to Channel:1
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461147927]  Start counting down....
+silent for 10 seconds
+[1461147928]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461147928]: I will change radio0 to Channel:6
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461148237]  Start counting down....
+silent for 10 seconds
+[1461148237]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461148238]: I will change radio0 to Channel:11
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461148549]  Start counting down....
+silent for 10 seconds
+[1461148549]  Excuting dmac average algorithm
+E4F4C6FF8B25
+channel 1 dmac_avg: 1645
+channel 6 dmac_avg: 1493
+channel 11 dmac_avg: 1615
+[1461148550]: I will change radio0 to Channel:6
+Selected interface 'wlan0'
+OK
+silent for 10 seconds
+......
+silent for 290 seconds
+[1461148857]  Start counting down....
+silent for 10 seconds
+[1461148857]  Excuting dmac average algorithm
+E4F4C6FF8B25
+[1461148857]: I will change radio0 to Channel:1
+Selected interface 'wlan0'
+OK
+silent for 10 seconds

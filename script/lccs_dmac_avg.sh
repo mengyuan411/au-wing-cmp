@@ -29,7 +29,7 @@ then
 	#dmesg -c > /tmp/wifiunion-uploads/$mac/dmesg_data/$exec_time
 	#cat /tmp/wifiunion-uploads/$mac/dmesg_data/* | grep ampdu | awk -F ',' -v btime=$btime -v etime=$etime '{ if($2 >= btime && $2 <= etime) { print $0 }}' >> /tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt
 	#cat tmp/wifiunion-uploads/$mac/dmac_avg_$2.txt | sort -t ',' -k 4
-	avg_dmac=`cat /tmp/wifiunion-uploads/$mac/numcount.txt | awk -F ',' '{printf "%f,%d\n",($1*1000000+$2/1000)/$3,$3}'`
+	avg_dmac=`cat /tmp/wifiunion-uploads/$mac/numcount.txt | awk -F ',' '{printf "%f,%d\n",($1*1000000+$2*1000000)/$3,$3}'`
 fi
 #exec_time=`date '+%s'`
 #etime= $exec_time

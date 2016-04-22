@@ -18,12 +18,12 @@ if __name__=='__main__':
 
 		tmp = line.split(',')
 		sums = sums + float(tmp[4])
-		sumn = sumn + float(tmp[5])
+		sumn = sumn + float(tmp[5])/1000000000
 		count = count + 1
 
 		line = fr.readline()
 
 	fr.close()
-	fw = open("/tmp/wifiunion-uploads/" + mac + "/numcount.txt",w)
+	fw = open("/tmp/wifiunion-uploads/" + mac + "/numcount.txt",'w')
 	fw.write(str(sums) + ',' + str(sumn) + ',' + str(count) + '\n')
 	fw.close()

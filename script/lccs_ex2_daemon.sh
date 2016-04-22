@@ -56,6 +56,7 @@ then
 else
 	type="radio1"
 fi
+echo "0,0,0" > /tmp/wifiunion-uploads/$mac/numcount.txt
 exec_time=`date '+%s'`
 echo "[$exec_time]: I will change $type to Channel:1"
 uci set wireless.$type.channel=1

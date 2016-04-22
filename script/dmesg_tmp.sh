@@ -4,5 +4,5 @@ PRO=`ps | grep 'dmesg_dum' | grep -v grep | wc -l`
 if [ $PRO -le 0 ]
 then
         chmod 777 /lib/pch/dmesg_dum.sh
-        /lib/pch/dmesg_dum.sh
+        /lib/pch/dmesg_dum.sh 5 1 
 fi
