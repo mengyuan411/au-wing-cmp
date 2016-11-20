@@ -1,7 +1,7 @@
 if [ $3 == '1' ]
 then
 	rm $2
-	echo "Tt,IU,LU,Ts,AP,IF,LOAD,ALL,R0,T0" > $2
+	echo "Tt,IU,LU,Ts,AP,IF,LOAD,ALL,R0,T0,IR,OR" > $2
 fi
 
 
