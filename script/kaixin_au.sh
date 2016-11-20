@@ -35,8 +35,13 @@ IF=`expr $LOAD - $AP`
 LU=`expr $LOAD "*" 100 "/" $ALL`
 IU=`expr $IF "*" 100 "/" $ALL`
 
+IN=`expr $LOAD - $T0`
+IR=`expr $IN "*" 100 "/" $ALL`
+
+OR=`expr $T0 "*" 100 "/" $ALL`
+
 Tt=`date "+%D %T"`
 Ts=`date "+%s"`
 
-echo "$Tt,$IU,$LU,$Ts,$AP,$IF,$LOAD,$ALL,$R0,$T0" >> $2
+echo "$Tt,$IU,$LU,$Ts,$AP,$IF,$LOAD,$ALL,$R0,$T0,$IR,$OR" >> $2
 done
